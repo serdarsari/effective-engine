@@ -6,6 +6,5 @@ namespace GalaxyExplorer.Service
     public interface IMissionService
     {
         Task<MissionStartResponse> StartMissionAsync(MissionStartRequest request);
-        Task<GetVoyagersResponse> GetVoyagers(GetVoyagersRequest request);
     }
 }

@@ -28,6 +28,7 @@ namespace GalaxyExplorer.API
                 options.UseSqlServer(Configuration.GetConnectionString("GalaxyDbConnStr"), b => b.MigrationsAssembly("GalaxyExplorer.API"));
             });
             services.AddTransient<IMissionService, MissionService>();
+            services.AddTransient<IVoyagerService, VoyagerService>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
