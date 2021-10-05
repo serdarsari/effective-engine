@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GalaxyExplorer.API.Db.Migrations
 {
     [DbContext(typeof(GalaxyExplorerDbContext))]
-    [Migration("20210514112203_Initial")]
+    [Migration("20211005113440_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,6 +28,9 @@ namespace GalaxyExplorer.API.Db.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -43,6 +46,28 @@ namespace GalaxyExplorer.API.Db.Migrations
                     b.HasKey("MissionId");
 
                     b.ToTable("Missions");
+                });
+
+            modelBuilder.Entity("GalaxyExplorer.Entity.MissionVoyager", b =>
+                {
+                    b.Property<int>("MissionVoyagerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("MissionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VoyagerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MissionVoyagerId");
+
+                    b.HasIndex("MissionId");
+
+                    b.HasIndex("VoyagerId");
+
+                    b.ToTable("MissionVoyagers");
                 });
 
             modelBuilder.Entity("GalaxyExplorer.Entity.Spaceship", b =>
@@ -164,9 +189,6 @@ namespace GalaxyExplorer.API.Db.Migrations
                     b.Property<string>("Grade")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("MissionId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -175,23 +197,32 @@ namespace GalaxyExplorer.API.Db.Migrations
 
                     b.HasKey("VoyagerId");
 
-                    b.HasIndex("MissionId");
-
                     b.ToTable("Voyagers");
                 });
 
-            modelBuilder.Entity("GalaxyExplorer.Entity.Voyager", b =>
+            modelBuilder.Entity("GalaxyExplorer.Entity.MissionVoyager", b =>
                 {
                     b.HasOne("GalaxyExplorer.Entity.Mission", null)
-                        .WithMany("Voyagers")
+                        .WithMany("MissionVoyagers")
                         .HasForeignKey("MissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GalaxyExplorer.Entity.Voyager", null)
+                        .WithMany("MissionVoyagers")
+                        .HasForeignKey("VoyagerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("GalaxyExplorer.Entity.Mission", b =>
                 {
-                    b.Navigation("Voyagers");
+                    b.Navigation("MissionVoyagers");
+                });
+
+            modelBuilder.Entity("GalaxyExplorer.Entity.Voyager", b =>
+                {
+                    b.Navigation("MissionVoyagers");
                 });
 #pragma warning restore 612, 618
         }

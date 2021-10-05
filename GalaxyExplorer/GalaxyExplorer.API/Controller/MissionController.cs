@@ -28,5 +28,14 @@ namespace GalaxyExplorer.API.Controller
             else
                 return BadRequest(startResult.Message); // Değilse HTTP Bad Request
         }
+
+        [HttpPut("{missionId}")]
+        public async Task<IActionResult> CompletedAsync(int missionId){     //Route ile missionId parametresini alalım.
+            var completedResult = await _missionService.UpdateCompletedMissionAsync(missionId);    //Servisdeki ilgili metodu çağıralım.
+            if(completedResult.Success)
+                return Ok(completedResult.Message);
+            else
+                return BadRequest(completedResult.Message);
+        }
     }
 }

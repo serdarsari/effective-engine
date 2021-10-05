@@ -21,5 +21,17 @@ namespace GalaxyExplorer.API.Controller
             var voyagers = await _voyagerService.GetVoyagers(request);
             return Ok(voyagers);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateVoyager([FromBody] CreateVoyagerRequest request){        //Yeni bir mürettebat üyesi eklemek için
+            if (!ModelState.IsValid)
+                return BadRequest(); // Model validasyon kurallarında ihlal olursa
+                
+            var createVoyagerResult = await _voyagerService.CreateVoyager(request);     //Servisdeki metodu çağıralım.
+            if (createVoyagerResult.Success)
+                return Ok(createVoyagerResult.Message);
+            else
+                return BadRequest(createVoyagerResult.Message);
+        }
     }
 }

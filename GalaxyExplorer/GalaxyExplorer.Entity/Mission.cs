@@ -10,6 +10,7 @@ namespace GalaxyExplorer.Entity
         public string Name { get; set; }
         public int PlannedDuration { get; set; }
         public DateTime StartDate { get; set; }
-        public IEnumerable<Voyager> Voyagers { get; set; }
+        public bool IsCompleted { get; set; }
+        public IEnumerable<MissionVoyager> MissionVoyagers { get; set; }
     }
 }

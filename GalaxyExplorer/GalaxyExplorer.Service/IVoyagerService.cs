@@ -6,5 +6,6 @@ namespace GalaxyExplorer.Service
     public interface IVoyagerService
     {
         Task<GetVoyagersResponse> GetVoyagers(GetVoyagersRequest request);
+        Task<CreateVoyagerResponse> CreateVoyager(CreateVoyagerRequest request);
     }
 }

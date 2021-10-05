@@ -1,6 +1,7 @@
 using GalaxyExplorer.DTO;
 using GalaxyExplorer.Entity;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,7 +25,7 @@ namespace GalaxyExplorer.Service
             {
                 // Kolaylık olsun diye sonraki sayfa için de bir link bıraktım
                 // Lakin başka kayıt yoksa birinci sayfaya da döndürebiliriz
-                NextPage = $"api/voyager?PageNumber={request.PageNumber + 1}&PageSize={request.PageSize}&OnMission={request.OnMission}", 
+                NextPage = $"api/voyager?PageNumber={request.PageNumber + 1}&PageSize={request.PageSize}&OnMission={request.OnMission}",
                 TotalVoyagers = await _dbContext.Voyagers.CountAsync(),
                 TotalActiveVoyagers = await _dbContext.Voyagers.CountAsync(v => v.OnMission == true)
             };
@@ -43,6 +44,34 @@ namespace GalaxyExplorer.Service
             response.Voyagers = voyagers;
 
             return response;
+        }
+
+        public async Task<CreateVoyagerResponse> CreateVoyager(CreateVoyagerRequest request)
+        {
+            try
+            {
+                Voyager voyager = new Voyager           //Veritabanındaki Voyagers tablosuna yeni satır ekleyebilmek için, yeni bir Voyager nesnesi oluşturup, içini request ile gelen bilgilerle dolduralım.
+                {
+                    Name = request.Name,
+                    Grade = request.Grade,
+                    OnMission = false,      //Yeni oluşturulduğu için henüz görevde değil.
+                };
+
+                await _dbContext.Voyagers.AddAsync(voyager);
+                await _dbContext.SaveChangesAsync();
+
+                return new CreateVoyagerResponse{
+                    Success = true,
+                    Message = "Mürettebat üyesi başarıyla oluşturuldu."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new CreateVoyagerResponse{
+                    Success = false,
+                    Message = ex.Message
+                };
+            }
         }
     }
 }

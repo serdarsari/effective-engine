@@ -16,7 +16,8 @@ namespace GalaxyExplorer.API.Db.Migrations
                     SpaceshipId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PlannedDuration = table.Column<int>(type: "int", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,17 +49,36 @@ namespace GalaxyExplorer.API.Db.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Grade = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FirstMissionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OnMission = table.Column<bool>(type: "bit", nullable: false),
-                    MissionId = table.Column<int>(type: "int", nullable: false)
+                    OnMission = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Voyagers", x => x.VoyagerId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MissionVoyagers",
+                columns: table => new
+                {
+                    MissionVoyagerId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MissionId = table.Column<int>(type: "int", nullable: false),
+                    VoyagerId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MissionVoyagers", x => x.MissionVoyagerId);
                     table.ForeignKey(
-                        name: "FK_Voyagers_Missions_MissionId",
+                        name: "FK_MissionVoyagers_Missions_MissionId",
                         column: x => x.MissionId,
                         principalTable: "Missions",
                         principalColumn: "MissionId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MissionVoyagers_Voyagers_VoyagerId",
+                        column: x => x.VoyagerId,
+                        principalTable: "Voyagers",
+                        principalColumn: "VoyagerId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -80,21 +100,29 @@ namespace GalaxyExplorer.API.Db.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Voyagers_MissionId",
-                table: "Voyagers",
+                name: "IX_MissionVoyagers_MissionId",
+                table: "MissionVoyagers",
                 column: "MissionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MissionVoyagers_VoyagerId",
+                table: "MissionVoyagers",
+                column: "VoyagerId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "MissionVoyagers");
+
+            migrationBuilder.DropTable(
                 name: "Spaceships");
 
             migrationBuilder.DropTable(
-                name: "Voyagers");
+                name: "Missions");
 
             migrationBuilder.DropTable(
-                name: "Missions");
+                name: "Voyagers");
         }
     }
 }

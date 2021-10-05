@@ -13,9 +13,11 @@ namespace GalaxyExplorer.Entity
         public DbSet<Spaceship> Spaceships { get; set; }
         public DbSet<Voyager> Voyagers { get; set; }
         public DbSet<Mission> Missions { get; set; }
+        public DbSet<MissionVoyager> MissionVoyagers {get; set;}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Mission>().HasMany(m => m.Voyagers).WithOne();
+            modelBuilder.Entity<Mission>().HasMany(m => m.MissionVoyagers).WithOne();
+            modelBuilder.Entity<Voyager>().HasMany(m => m.MissionVoyagers).WithOne();
 
             modelBuilder.Entity<Spaceship>().HasData(
                 new Spaceship
